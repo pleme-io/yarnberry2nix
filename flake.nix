@@ -4,13 +4,8 @@
   inputs = {
     # Specify the Nixpkgs version to ensure reproducibility
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
-
-    # Optional: Include flake-utils for convenience functions
+    cargo2nix.url = "github:cargo2nix/cargo2nix/release-0.11.0";
     flake-utils.url = "github:numtide/flake-utils";
-
-    # Optional: Rust overlay for additional Rust toolchains
-    # rust-overlay.url = "github:oxalica/rust-overlay";
-    # rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { self, nixpkgs, flake-utils }:
@@ -18,13 +13,16 @@
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [
-            # rust-overlay.overlay
-          ];
+          overlays = [ cargo2nix.overlays.default ];
+        };
+
+        rustPkgs = pkgs.rustBuilder.makePackageSet {
+          rustVersion = "1.75.0";
+          packageFun = import ./Cargo.nix;
         };
 
         # Define the Rust toolchain you want to use
-        rustChannel = pkgs.rust-bin.stable.latest.default;
+        # rustChannel = pkgs.rust-bin.stable.latest.default;
       in
       {
         # Package definition for your Rust project
