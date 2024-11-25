@@ -24,7 +24,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "c85fbd009e3d5f63d72ba7d835db347151413e02f643d252c224330b3bebd25c";
+  nixifiedLockHash = "2932e88e47f22ed91f47006099941b5ebe8db3c7d8bbc0244ebe85f3cb5486df";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored = if ignoreLockHash
@@ -2753,15 +2753,15 @@ in
     ];
     dependencies = {
       pin_project_lite = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".pin-project-lite."0.2.15" { inherit profileName; }).out;
-      tracing_core = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing-core."0.1.32" { inherit profileName; }).out;
+      tracing_core = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing-core."0.1.33" { inherit profileName; }).out;
     };
   });
   
-  "registry+https://github.com/rust-lang/crates.io-index".tracing-core."0.1.32" = overridableMkRustCrate (profileName: rec {
+  "registry+https://github.com/rust-lang/crates.io-index".tracing-core."0.1.33" = overridableMkRustCrate (profileName: rec {
     name = "tracing-core";
-    version = "0.1.32";
+    version = "0.1.33";
     registry = "registry+https://github.com/rust-lang/crates.io-index";
-    src = fetchCratesIo { inherit name version; sha256 = "c06d3da6113f116aaee68e4d601191614c9053067f9ab7f6edbcb161237daa54"; };
+    src = fetchCratesIo { inherit name version; sha256 = "e672c95779cf947c5311f83787af4fa8fffd12fb27e4993211a84bdfd9610f9c"; };
     features = builtins.concatLists [
       [ "once_cell" ]
       [ "std" ]
