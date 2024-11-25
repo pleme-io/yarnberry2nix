@@ -8,7 +8,7 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, cargo2nix }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -57,8 +57,8 @@
         # Development shell with the Rust toolchain and other utilities
         devShells.default = pkgs.mkShell {
           buildInputs = [
-            rustChannel.rustc
-            rustChannel.cargo
+            # rustChannel.rustc
+            # rustChannel.cargo
             # pkgs.pkg-config
             # Add other tools you need in your development environment
           ];
