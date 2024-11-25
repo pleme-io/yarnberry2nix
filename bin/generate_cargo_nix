@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# nix develop github:cargo2nix/cargo2nix#bootstrap
+cargo2nix
