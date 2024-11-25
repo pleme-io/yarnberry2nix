@@ -66,6 +66,8 @@
           '';
           buildInputs = with pkgs;[
             openssl
+						rustfmt
+						rust-analyzer
             # outputs.packages.yarnberry2nix
             # outputs.packages.yarnberry2nix
             # rustChannel.rustc
