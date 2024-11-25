@@ -11,16 +11,21 @@
   outputs = { self, nixpkgs, flake-utils, cargo2nix }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        rustOverlay = import (builtins.fetchTarball {
+          url = "https://github.com/oxalica/rust-overlay/archive/master.tar.gz";
+          sha256 = "sha256:1lbp3qn5nsbrvkv8mbqd9r8307vn68llkyr2lp1vr5pczzcpays4";
+        });
+
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ cargo2nix.overlays.default ];
+          overlays = [ rustOverlay cargo2nix.overlays.default ];
         };
 
         rustPkgs = pkgs.rustBuilder.makePackageSet {
           rustVersion = "1.75.0";
           packageFun = import ./Cargo.nix;
         };
-
+        rust = pkgs.latest.rustChannels.stable;
         # Define the Rust toolchain you want to use
         # rustChannel = pkgs.rust-bin.stable.latest.default;
       in
@@ -61,19 +66,16 @@
 
         # Development shell with the Rust toolchain and other utilities
         devShells.default = pkgs.mkShell {
-          shellHook = ''
-            export PKG_CONFIG_PATH=${pkgs.openssl.dev}/lib/pkgconfig:$PKG_CONFIG_PATH
-          '';
+          # shellHook = ''
+          #   export PKG_CONFIG_PATH=${pkgs.openssl.dev}/lib/pkgconfig:$PKG_CONFIG_PATH
+          # '';
           buildInputs = with pkgs;[
+            rust.rustc
+            rust.cargo
+            rust.rustfmt
+            rust.rust-analyzer
             openssl
-						rustfmt
-						rust-analyzer
-            # outputs.packages.yarnberry2nix
-            # outputs.packages.yarnberry2nix
-            # rustChannel.rustc
-            # rustChannel.cargo
-            # pkgs.pkg-config
-            # Add other tools you need in your development environment
+            pkg-config
           ];
         };
       });
