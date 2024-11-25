@@ -24,4 +24,3 @@ thiserror = "2.0.3"
 url = "2.5.4"
 uuid = { version = "1.11.0", features = ["v4"] }
 walkdir = "2.5.0"
-openssl = { version = "0.10", features = ["vendored"] }
