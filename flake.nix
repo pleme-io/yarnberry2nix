@@ -61,7 +61,11 @@
 
         # Development shell with the Rust toolchain and other utilities
         devShells.default = pkgs.mkShell {
-          buildInputs = [
+          shellHook = ''
+            export PKG_CONFIG_PATH=${pkgs.openssl.dev}/lib/pkgconfig:$PKG_CONFIG_PATH
+          '';
+          buildInputs = with pkgs;[
+            openssl
             # outputs.packages.yarnberry2nix
             # outputs.packages.yarnberry2nix
             # rustChannel.rustc
