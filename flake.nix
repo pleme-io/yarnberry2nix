@@ -24,7 +24,7 @@
         # Define the Rust toolchain you want to use
         # rustChannel = pkgs.rust-bin.stable.latest.default;
       in
-      {
+      rec {
         # Package definition for your Rust project
         # packages.yarnberry2nix = pkgs.rustPlatform.buildRustPackage {
         #   pname = "yarnberry2nix";
@@ -54,9 +54,16 @@
         #   ];
         # };
 
+        packages = {
+          yarnberry2nix = (rustPkgs.workspace.yarnberry2nix { });
+          default = packages.yarnberry2nix;
+        };
+
         # Development shell with the Rust toolchain and other utilities
         devShells.default = pkgs.mkShell {
           buildInputs = [
+            # outputs.packages.yarnberry2nix
+            # outputs.packages.yarnberry2nix
             # rustChannel.rustc
             # rustChannel.cargo
             # pkgs.pkg-config
