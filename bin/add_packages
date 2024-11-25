@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Parsing and Serialization
+cargo add serde --features derive
+cargo add serde_yaml
+
+# Command-Line Interface
+cargo add clap --features derive
+
+# Template Rendering
+cargo add tera
+
+# Error Handling
+cargo add anyhow
+cargo add thiserror
+
+# Logging
+cargo add log
+cargo add env_logger
+
+# Dependency Graph Management
+cargo add petgraph
+
+# Utilities
+cargo add regex
+cargo add url
+cargo add semver
+cargo add lazy_static
+cargo add walkdir
+
+# CLI Enhancements
+cargo add indicatif
+
+# Unique Identifiers and Time Handling
+cargo add uuid --features v4
+cargo add chrono --features serde
+
+# Networking (Optional)
+cargo add reqwest --features json
+
+# File System Operations
+cargo add tempdir
+cargo add fs_extra
