@@ -24,7 +24,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "e9d4f29b6cf4a946b77105f53770400f204b076e1b63846419ec2aaad2d8e0ac";
+  nixifiedLockHash = "2932e88e47f22ed91f47006099941b5ebe8db3c7d8bbc0244ebe85f3cb5486df";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored = if ignoreLockHash
@@ -1556,7 +1556,6 @@ in
     src = fetchCratesIo { inherit name version; sha256 = "6174bc48f102d208783c2c84bf931bb75927a617866870de8a4ea85597f871f5"; };
     features = builtins.concatLists [
       [ "default" ]
-      [ "vendored" ]
     ];
     dependencies = {
       bitflags = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bitflags."2.6.0" { inherit profileName; }).out;
@@ -1588,35 +1587,16 @@ in
     src = fetchCratesIo { inherit name version; sha256 = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"; };
   });
   
-  "registry+https://github.com/rust-lang/crates.io-index".openssl-src."300.4.1+3.4.0" = overridableMkRustCrate (profileName: rec {
-    name = "openssl-src";
-    version = "300.4.1+3.4.0";
-    registry = "registry+https://github.com/rust-lang/crates.io-index";
-    src = fetchCratesIo { inherit name version; sha256 = "faa4eac4138c62414b5622d1b31c5c304f34b406b013c079c2bbc652fdd6678c"; };
-    features = builtins.concatLists [
-      [ "default" ]
-      [ "legacy" ]
-    ];
-    dependencies = {
-      cc = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" { inherit profileName; }).out;
-    };
-  });
-  
   "registry+https://github.com/rust-lang/crates.io-index".openssl-sys."0.9.104" = overridableMkRustCrate (profileName: rec {
     name = "openssl-sys";
     version = "0.9.104";
     registry = "registry+https://github.com/rust-lang/crates.io-index";
     src = fetchCratesIo { inherit name version; sha256 = "45abf306cbf99debc8195b66b7346498d7b10c210de50418b5ccd7ceba08c741"; };
-    features = builtins.concatLists [
-      [ "openssl-src" ]
-      [ "vendored" ]
-    ];
     dependencies = {
       libc = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".libc."0.2.165" { inherit profileName; }).out;
     };
     buildDependencies = {
       cc = (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" { profileName = "__noProfile"; }).out;
-      openssl_src = (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".openssl-src."300.4.1+3.4.0" { profileName = "__noProfile"; }).out;
       pkg_config = (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".pkg-config."0.3.31" { profileName = "__noProfile"; }).out;
       vcpkg = (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".vcpkg."0.2.15" { profileName = "__noProfile"; }).out;
     };
@@ -3424,7 +3404,6 @@ in
       indicatif = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".indicatif."0.17.9" { inherit profileName; }).out;
       lazy_static = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".lazy_static."1.5.0" { inherit profileName; }).out;
       log = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".log."0.4.22" { inherit profileName; }).out;
-      openssl = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".openssl."0.10.68" { inherit profileName; }).out;
       petgraph = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".petgraph."0.6.5" { inherit profileName; }).out;
       regex = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".regex."1.11.1" { inherit profileName; }).out;
       reqwest = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".reqwest."0.12.9" { inherit profileName; }).out;
