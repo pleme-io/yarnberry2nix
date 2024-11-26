@@ -2351,6 +2351,7 @@ dependencies = [
  "log",
  "petgraph",
  "regex",
+ "regex-syntax",
  "reqwest",
  "semver",
  "serde",

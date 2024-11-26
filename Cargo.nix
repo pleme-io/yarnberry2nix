@@ -24,7 +24,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "2932e88e47f22ed91f47006099941b5ebe8db3c7d8bbc0244ebe85f3cb5486df";
+  nixifiedLockHash = "6868874d622d001047781c56495c1a2cd18246aae126671f4202a36e7234aabe";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored = if ignoreLockHash
@@ -3406,6 +3406,7 @@ in
       log = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".log."0.4.22" { inherit profileName; }).out;
       petgraph = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".petgraph."0.6.5" { inherit profileName; }).out;
       regex = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".regex."1.11.1" { inherit profileName; }).out;
+      regex_syntax = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".regex-syntax."0.8.5" { inherit profileName; }).out;
       reqwest = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".reqwest."0.12.9" { inherit profileName; }).out;
       semver = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".semver."1.0.23" { inherit profileName; }).out;
       serde = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.215" { inherit profileName; }).out;
