@@ -54,6 +54,7 @@
             toolchain # The Rust toolchain defined by toolchain.toml
             openssl # OpenSSL for cryptographic functions
             pkg-config # Helps in compiling packages
+						rust-analyzer-unwrapped
           ];
 
           # Set environment variables
