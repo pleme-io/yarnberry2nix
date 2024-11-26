@@ -25,6 +25,7 @@
           rustVersion = "1.75.0";
           packageFun = import ./Cargo.nix;
         };
+
         rust = pkgs.latest.rustChannels.stable;
         # Define the Rust toolchain you want to use
         # rustChannel = pkgs.rust-bin.stable.latest.default;
