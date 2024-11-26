@@ -2,64 +2,47 @@
   description = "A flake for building the yarnberry2nix Rust project";
 
   inputs = {
-    # Specify the Nixpkgs version to ensure reproducibility
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+    # Use a recent version of nixpkgs that includes rustPackages.rust-src
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # Import the rust-overlay for managing Rust toolchains
+    rust-overlay.url = "github:oxalica/rust-overlay";
+
+    # Import cargo2nix for converting Cargo dependencies to Nix expressions
     cargo2nix.url = "github:cargo2nix/cargo2nix/release-0.11.0";
+
+
+    # Import flake-utils for simplified flake configuration
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils, cargo2nix }:
+  outputs = { self, nixpkgs, rust-overlay, cargo2nix, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        rustOverlay = import (builtins.fetchTarball {
-          url = "https://github.com/oxalica/rust-overlay/archive/master.tar.gz";
-          sha256 = "sha256:1lbp3qn5nsbrvkv8mbqd9r8307vn68llkyr2lp1vr5pczzcpays4";
-        });
-
+        # Import Nixpkgs with the rust-overlay
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ rustOverlay cargo2nix.overlays.default ];
+          overlays = [ rust-overlay.overlays.default cargo2nix.overlays.default ];
         };
 
+        # Define the Rust toolchain using the toolchain.toml file
+        toolchain = pkgs.rust-bin.fromRustupToolchainFile ./toolchain.toml;
+
+        # Generate Cargo.nix using cargo2nix
+        cargoNix = cargo2nix.generate {
+          projectDir = ./.;
+        };
+
+        # Create a package set for Rust using the specified toolchain
         rustPkgs = pkgs.rustBuilder.makePackageSet {
           rustVersion = "1.75.0";
           packageFun = import ./Cargo.nix;
         };
 
+        # Reference to the latest stable Rust channel
         rust = pkgs.latest.rustChannels.stable;
-        # Define the Rust toolchain you want to use
-        # rustChannel = pkgs.rust-bin.stable.latest.default;
       in
       rec {
-        # Package definition for your Rust project
-        # packages.yarnberry2nix = pkgs.rustPlatform.buildRustPackage {
-        #   pname = "yarnberry2nix";
-        #   version = "0.1.0"; # Update to your project's version
-        #
-        #   # Use the source code from the current directory
-        #   src = self;
-        #
-        #   # Cargo.lock is used for reproducibility
-        #   cargoLock = {
-        #     lockFile = self + /Cargo.lock;
-        #   };
-        #
-        #   # Fetch the crates.io index; the hash will be auto-computed
-        #   # Alternatively, you can set cargoSha256 to "0000000000000000000000000000000000000000000000000000"
-        #   # and Nix will provide the correct hash on build failure
-        #   cargoSha256 = "0000000000000000000000000000000000000000000000000000";
-        #
-        #   # Specify the Rust toolchain
-        #   rustc = rustChannel.rustc;
-        #   cargo = rustChannel.cargo;
-        #
-        #   # Include any native build inputs your project requires
-        #   nativeBuildInputs = with pkgs; [
-        #     # For example, if you need OpenSSL:
-        #     # openssl
-        #   ];
-        # };
-
         packages = {
           yarnberry2nix = (rustPkgs.workspace.yarnberry2nix { });
           default = packages.yarnberry2nix;
@@ -67,18 +50,18 @@
 
         # Development shell with the Rust toolchain and other utilities
         devShells.default = pkgs.mkShell {
-          # shellHook = ''
-          #   export PKG_CONFIG_PATH=${pkgs.openssl.dev}/lib/pkgconfig:$PKG_CONFIG_PATH
-          # '';
-          buildInputs = with pkgs;[
-            rust.rustc
-            rust.cargo
-            rust.rustfmt
-            rust.rust-analyzer
-            openssl
-            pkg-config
+          buildInputs = with pkgs; [
+            toolchain # The Rust toolchain defined by toolchain.toml
+            openssl # OpenSSL for cryptographic functions
+            pkg-config # Helps in compiling packages
           ];
+
+          # Set environment variables
+          shellHook = ''
+            export RUST_SRC_PATH=${toolchain}/lib/rustlib/src/rust/library
+          '';
         };
       });
 }
+
 
