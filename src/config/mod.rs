@@ -1,8 +1,7 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use anyhow::{Result, Context};
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
 use std::env;
 
 // Define the configuration structure
@@ -29,6 +28,21 @@ struct GeneralConfig {
     pub environment: Option<String>,
 }
 
+// Define the default configuration
+fn default_config() -> Config<AppConfig> {
+    Config {
+        general: GeneralConfig {
+            app_name: Some("Default App".to_string()),
+            version: Some("0.1.0".to_string()),
+            environment: Some("development".to_string()),
+        },
+        specific: AppConfig {
+            database_url: Some("sqlite://default.db".to_string()),
+            cache_size: Some(256),
+        },
+    }
+}
+
 // Define the paths to your config files
 static CONFIG_PATHS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
     let mut paths = Vec::new();
@@ -51,23 +65,35 @@ static CONFIG_PATHS: Lazy<Vec<PathBuf>> = Lazy::new(|| {
 
 // Singleton instance of the configuration
 static CONFIG: Lazy<Result<AppConfiguration>> = Lazy::new(|| {
+    // Start with the default configuration
+    let mut combined_config = serde_yaml::to_value(default_config())
+        .context("Failed to serialize default configuration")?;
+
+    // Load additional configurations from files
     let paths: Vec<&Path> = CONFIG_PATHS.iter().map(Path::new).collect();
-    Config::<AppConfig>::from_files(&paths)
+    for path in paths {
+        if path.exists() {
+            let content = std::fs::read_to_string(path)
+                .context(format!("Failed to read configuration file: {:?}", path))?;
+            let yaml: serde_yaml::Value = serde_yaml::from_str(&content)
+                .context(format!("Failed to parse YAML configuration file: {:?}", path))?;
+            Config::<AppConfig>::merge_values(&mut combined_config, yaml);
+        }
+    }
+
+    // Deserialize the combined configuration into the strongly-typed structure
+    let combined_str = serde_yaml::to_string(&combined_config)
+        .context("Failed to serialize merged configuration into string")?;
+    let config: Config<AppConfig> = serde_yaml::from_str(&combined_str)
+        .context("Failed to deserialize merged configuration into Config struct")?;
+
+    Ok(config)
 });
 
 impl<T> Config<T>
 where
     T: for<'de> Deserialize<'de> + Serialize,
 {
-    /// Load a generic config file and deserialize it
-    pub fn from_file(config_path: &Path) -> Result<Self> {
-        let content = std::fs::read_to_string(config_path)
-            .context(format!("Failed to read configuration file: {:?}", config_path))?;
-        let config: Config<T> = serde_yaml::from_str(&content)
-            .context("Failed to parse YAML configuration file")?;
-        Ok(config)
-    }
-
     /// Merge two `serde_yaml::Value` objects for merging YAML configurations
     fn merge_values(base: &mut serde_yaml::Value, override_val: serde_yaml::Value) {
         match (base, override_val) {
@@ -80,26 +106,6 @@ where
                 *base = override_val; // Override with the new value
             }
         }
-    }
-
-    /// Load and merge multiple config files
-    pub fn from_files(config_paths: &[&Path]) -> Result<Self> {
-        let mut combined = serde_yaml::Value::Mapping(Default::default());
-
-        for path in config_paths {
-            let content = std::fs::read_to_string(path)
-                .context(format!("Failed to read configuration file: {:?}", path))?;
-            let yaml: serde_yaml::Value = serde_yaml::from_str(&content)
-                .context(format!("Failed to parse YAML configuration file: {:?}", path))?;
-            Config::<T>::merge_values(&mut combined, yaml);
-        }
-
-        let combined_str = serde_yaml::to_string(&combined)
-            .context("Failed to serialize merged configuration into string")?;
-        let config: Config<T> = serde_yaml::from_str(&combined_str)
-            .context("Failed to deserialize merged configuration into Config struct")?;
-
-        Ok(config)
     }
 }
 
@@ -122,3 +128,4 @@ pub fn config() -> &'static AppConfiguration {
 //
 //    Ok(())
 //}
+
