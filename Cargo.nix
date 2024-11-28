@@ -24,7 +24,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "6dd33ae90d271877589ea8291d7fd31f571e95d597e10b87ad5f8f6eff7124b8";
+  nixifiedLockHash = "f288138076971e9de6335137767da99da8b32f31136ec60fe1a29746f02ff885";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored = if ignoreLockHash
@@ -3553,6 +3553,7 @@ in
       reqwest = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".reqwest."0.12.9" { inherit profileName; }).out;
       semver = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".semver."1.0.23" { inherit profileName; }).out;
       serde = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.215" { inherit profileName; }).out;
+      serde_json = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde_json."1.0.133" { inherit profileName; }).out;
       serde_yaml = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde_yaml."0.9.34+deprecated" { inherit profileName; }).out;
       tempdir = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tempdir."0.3.7" { inherit profileName; }).out;
       tera = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tera."1.20.0" { inherit profileName; }).out;
