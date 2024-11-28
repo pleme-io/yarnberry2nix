@@ -6,6 +6,7 @@
 * in berry such as the package_json or yarnrc_yml
 */
 pub mod package_json;
+mod tests;
 // pub mod yarnrc_yml;
 // pub mod pnp;
 // pub mod cache;
