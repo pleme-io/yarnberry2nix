@@ -6,7 +6,7 @@ mod package_json;
 //mod pnp;
 //mod cache;
 
-use package_json::PackageJson;
+use package_json::structs::PackageJson;
 //use yarnrc_yml::YarnRcYml;
 
 #[derive(Debug)]
