@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::structs::{PackageJson, Repository}; // Explicitly import structs
     use serde_json::json;
 
     #[test]
@@ -67,3 +67,4 @@ mod tests {
         );
     }
 }
+
