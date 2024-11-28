@@ -7,4 +7,4 @@
 */
 pub mod package_json;
 mod tests;
-mod structs;
+pub mod structs;
