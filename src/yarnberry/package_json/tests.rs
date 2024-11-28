@@ -1,7 +1,9 @@
 #[cfg(test)]
 mod tests {
     use super::structs::{PackageJson, Repository}; // Explicitly import structs
-    use serde_json::json;
+    use serde_json::{from_str, json}; // Import `from_str` and `json` for JSON handling
+    use serde_json;
+
 
     #[test]
     fn test_parse_package_json() {
