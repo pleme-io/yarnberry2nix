@@ -109,6 +109,7 @@ pub fn config() -> &'static AppConfiguration {
     }
 }
 
+// keeping this comment here to store usage information
 //fn main() -> Result<()> {
 //    // Access the configuration singleton
 //    let cfg = config();
