@@ -5,7 +5,7 @@ use anyhow::{Result, Context};
 use serde_json; // Import serde_json for JSON parsing
 use std::fs;
 use std::path::Path;
-use structs::PackageJson; // Import `PackageJson`
+pub use structs::{PackageJson, Repository};
 
 /// Internal function to parse a `package.json` file into a `PackageJson` struct
 fn from_file(path: &Path) -> Result<PackageJson> {

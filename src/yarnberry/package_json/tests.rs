@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use super::structs::PackageJson; // Import the PackageJson struct
-    use serde_json::json; // Import the `json` macro for creating JSON data
+    use crate::yarnberry::package_json::structs::PackageJson; // Use the correct path
+    use serde_json::json;
 
     #[test]
     fn test_package_json_parsing() {
