@@ -1,21 +1,12 @@
+pub mod structs;
+
 use anyhow::{Result, Context};
 use yarn_lock_parser::{parse_str, Entry};
 use std::fs;
 use std::path::Path;
 use std::collections::HashMap;
-
-#[derive(Debug)]
-pub struct YarnLockEntry {
-    pub version: String,
-    pub resolved: Option<String>,
-    pub integrity: Option<String>,
-    pub dependencies: Option<HashMap<String, String>>,
-}
-
-#[derive(Debug)]
-pub struct YarnLock {
-    pub entries: HashMap<String, YarnLockEntry>,
-}
+use crate::yarnberry::yarn_lock::structs::YarnLockEntry;
+use crate::yarnberry::yarn_lock::structs::YarnLock;
 
 /// Parses a yarn.lock file into a `YarnLock` struct
 pub fn parse_yarn_lock(path: &Path) -> Result<YarnLock> {
