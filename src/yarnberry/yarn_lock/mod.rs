@@ -1,4 +1,5 @@
 pub mod structs;
+pub mod tests;
 
 use anyhow::{Result, Context};
 use yarn_lock_parser::{parse_str, Entry};
