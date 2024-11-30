@@ -8,7 +8,6 @@ use std::collections::HashMap;
 use crate::yarnberry::yarn_lock::structs::YarnLockEntry;
 use crate::yarnberry::yarn_lock::structs::YarnLock;
 
-/// Parses a yarn.lock file into a `YarnLock` struct
 pub fn parse_yarn_lock(path: &Path) -> Result<YarnLock> {
     let content = fs::read_to_string(path)
         .with_context(|| format!("Failed to read yarn.lock at {:?}", path))?;
