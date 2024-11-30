@@ -4,7 +4,7 @@ mod tests {
     use std::fs;
     use std::path::Path;
     use tempfile::tempdir;
-    use structs::YarnBerryEnvironment;
+    use crate::yarnberry::structs::YarnBerryEnvironment;
 
     #[test]
     fn test_from_project_root_with_valid_package_json() {
