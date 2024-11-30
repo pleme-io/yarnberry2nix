@@ -11,7 +11,6 @@
     # Import cargo2nix for converting Cargo dependencies to Nix expressions
     cargo2nix.url = "github:cargo2nix/cargo2nix/release-0.11.0";
 
-
     # Import flake-utils for simplified flake configuration
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -54,7 +53,7 @@
             toolchain # The Rust toolchain defined by toolchain.toml
             openssl # OpenSSL for cryptographic functions
             pkg-config # Helps in compiling packages
-						rust-analyzer-unwrapped
+            rust-analyzer-unwrapped
           ];
 
           # Set environment variables
@@ -64,5 +63,3 @@
         };
       });
 }
-
-
