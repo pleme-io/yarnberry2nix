@@ -29,8 +29,8 @@ pub fn parse_yarn_lock(path: &Path) -> Result<YarnLock> {
 
             let yarn_lock_entry = YarnLockEntry {
                 version: version.to_string(),
-                resolved: None, // Adjust if `resolved` is part of `Entry`
-                integrity: Some(integrity.to_string()), // Adjusted to handle non-Option
+                resolved: None,
+                integrity: Some(integrity.to_string()),
                 dependencies: Some(
                     dependencies
                         .into_iter()
