@@ -1,14 +1,21 @@
-/*
-* absorb yarn_lock into a structure
-*/
-pub mod structs;
-
 use anyhow::{Result, Context};
-use std::path::Path;
-use yarn_lock_parser::parse_str;
+use yarn_lock_parser::{parse_str, Entry};
 use std::fs;
-use crate::yarnberry::yarn_lock::structs::YarnLockEntry;
-use crate::yarnberry::yarn_lock::structs::YarnLock;
+use std::path::Path;
+use std::collections::HashMap;
+
+#[derive(Debug)]
+pub struct YarnLockEntry {
+    pub version: String,
+    pub resolved: Option<String>,
+    pub integrity: Option<String>,
+    pub dependencies: Option<HashMap<String, String>>,
+}
+
+#[derive(Debug)]
+pub struct YarnLock {
+    pub entries: HashMap<String, YarnLockEntry>,
+}
 
 /// Parses a yarn.lock file into a `YarnLock` struct
 pub fn parse_yarn_lock(path: &Path) -> Result<YarnLock> {
@@ -20,16 +27,30 @@ pub fn parse_yarn_lock(path: &Path) -> Result<YarnLock> {
 
     let entries = parsed
         .into_iter()
-        .map(|(key, value)| {
-            let entry = YarnLockEntry {
-                version: value.version,
-                resolved: value.resolved,
-                integrity: value.integrity,
-                dependencies: value.dependencies,
+        .map(|entry| {
+            let Entry {
+                name,
+                version,
+                integrity,
+                dependencies,
+                ..
+            } = entry;
+
+            let yarn_lock_entry = YarnLockEntry {
+                version: version.to_string(),
+                resolved: None, // Adjust if `resolved` is part of `Entry`
+                integrity: Some(integrity.to_string()), // Adjusted to handle non-Option
+                dependencies: Some(
+                    dependencies
+                        .into_iter()
+                        .map(|(k, v)| (k.to_string(), v.to_string()))
+                        .collect(),
+                ),
             };
-            (key, entry)
+
+            (name.to_string(), yarn_lock_entry)
         })
-        .collect();
+        .collect::<HashMap<String, YarnLockEntry>>();
 
     Ok(YarnLock { entries })
 }
