@@ -6,5 +6,6 @@
 * in berry such as the package_json or yarnrc_yml
 */
 pub mod package_json;
+pub mod yarn_lock;
 mod tests;
 pub mod structs;
