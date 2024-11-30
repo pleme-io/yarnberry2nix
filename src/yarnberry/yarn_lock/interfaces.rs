@@ -1,14 +1,6 @@
-/*
-* absorb yarn_lock into a structure
-*/
-pub mod structs;
-
 use anyhow::{Result, Context};
-use std::path::Path;
 use yarn_lock_parser::parse_str;
 use std::fs;
-use crate::yarnberry::yarn_lock::structs::YarnLockEntry;
-use crate::yarnberry::yarn_lock::structs::YarnLock;
 
 /// Parses a yarn.lock file into a `YarnLock` struct
 pub fn parse_yarn_lock(path: &Path) -> Result<YarnLock> {

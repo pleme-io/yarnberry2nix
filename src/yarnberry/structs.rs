@@ -1,13 +1,13 @@
 use crate::yarnberry::package_json::PackageJson;
-//use anyhow::{Context, Result};
+use crate::yarnberry::yarn_lock::structs::YarnLock;
+use crate::yarnberry::yarn_lock::parse_yarn_lock;
 use anyhow::Result;
 use std::path::Path;
 
 #[derive(Debug)]
 pub struct YarnBerryEnvironment {
     pub package_json: Option<PackageJson>,
-    // pub yarnrc_yml: Option<YarnRcYml>,
-    // Add other components as needed
+    pub yarn_lock: Option<YarnLock>,
 }
 
 impl YarnBerryEnvironment {
@@ -20,9 +20,17 @@ impl YarnBerryEnvironment {
             }
         };
 
+        let yarn_lock = match parse_yarn_lock(&project_root.join("yarn.lock")) {
+            Ok(lock) => Some(lock),
+            Err(err) => {
+                eprintln!("Warning: Failed to load yarn.lock: {:?}", err);
+                None
+            }
+        };
+
         Ok(Self {
             package_json,
-            // yarnrc_yml,
+            yarn_lock,
         })
     }
 }
