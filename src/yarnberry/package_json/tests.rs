@@ -21,7 +21,7 @@ mod tests {
     #[test]
     fn test_package_json_parsing_specific() {
         let package_json_str = json!({
-            "name": "lilith",
+            "name": "app",
             "packageManager": "yarn@4.4.0",
             "private": true,
             "workspaces": ["packages/*"],
@@ -57,7 +57,7 @@ mod tests {
         let parsed: PackageJson = serde_json::from_str(&package_json_str)
             .expect("Failed to parse package.json");
 
-        assert_eq!(parsed.name, Some("lilith".to_string()));
+        assert_eq!(parsed.name, Some("app".to_string()));
         assert_eq!(parsed.package_manager, Some("yarn@4.4.0".to_string()));
         assert_eq!(parsed.private, Some(true));
 
