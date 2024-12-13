@@ -1,6 +1,54 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use serde::de::{self, Deserializer, Visitor, MapAccess};
+use std::fmt;
 
+// Implement custom deserialization for Workspaces
+fn deserialize_workspaces<'de, D>(deserializer: D) -> Result<Option<Workspaces>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct WorkspacesVisitor;
+
+    impl<'de> Visitor<'de> for WorkspacesVisitor {
+        type Value = Workspaces;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("a list of strings or an object with packages and nohoist")
+        }
+
+        fn visit_seq<V>(self, mut seq: V) -> Result<Self::Value, V::Error>
+        where
+            V: de::SeqAccess<'de>,
+        {
+            let mut vec = Vec::new();
+            while let Some(value) = seq.next_element()? {
+                vec.push(value);
+            }
+            Ok(Workspaces::Array(vec))
+        }
+
+        fn visit_map<M>(self, mut map: M) -> Result<Self::Value, M::Error>
+        where
+            M: MapAccess<'de>,
+        {
+            let mut packages = None;
+            let mut nohoist = None;
+
+            while let Some(key) = map.next_key::<String>()? {
+                match key.as_str() {
+                    "packages" => packages = map.next_value()?,
+                    "nohoist" => nohoist = map.next_value()?,
+                    _ => return Err(de::Error::unknown_field(&key, &["packages", "nohoist"])),
+                }
+            }
+            Ok(Workspaces::Object { packages, nohoist })
+        }
+    }
+
+    let visitor = WorkspacesVisitor;
+    deserializer.deserialize_any(visitor).map(Some)
+}
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PackageJson {
     pub name: Option<String>,
@@ -19,7 +67,9 @@ pub struct PackageJson {
     pub bundled_dependencies: Option<Vec<String>>,
     pub directories: Option<Directories>,
     pub config: Option<HashMap<String, String>>,
+    #[serde(deserialize_with = "deserialize_workspaces")]
     pub workspaces: Option<Workspaces>,
+    #[serde(rename = "packageManager")] // Added this line
     pub package_manager: Option<String>,
     pub license: Option<String>,
     pub repository: Option<Repository>,
@@ -46,9 +96,13 @@ pub struct Directories {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Workspaces {
-    pub packages: Option<Vec<String>>,
-    pub nohoist: Option<Vec<String>>,
+#[serde(untagged)]
+pub enum Workspaces {
+    Array(Vec<String>),
+    Object {
+        packages: Option<Vec<String>>,
+        nohoist: Option<Vec<String>>,
+    },
 }
 
 #[derive(Debug, Serialize, Deserialize)]

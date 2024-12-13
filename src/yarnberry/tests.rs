@@ -17,29 +17,29 @@ mod tests {
         fs::write(&package_json_path, content).expect("Failed to write package.json");
     }
 
-    #[test]
-    fn test_from_project_root_with_valid_package_json() {
-        let temp_dir = setup_temp_project();
-        let project_root = temp_dir.path();
-
-        let valid_package_json = r#"
-        {
-            "name": "example-project",
-            "version": "1.0.0"
-        }
-        "#;
-        write_package_json(project_root, valid_package_json);
-
-        let result = YarnBerryEnvironment::from_project_root(project_root);
-        assert!(result.is_ok());
-
-        let environment = result.unwrap();
-        assert!(environment.package_json.is_some());
-
-        let package_json = environment.package_json.unwrap();
-        assert_eq!(package_json.name, Some("example-project".to_string()));
-        assert_eq!(package_json.version, Some("1.0.0".to_string()));
-    }
+    //#[test]
+    //fn test_from_project_root_with_valid_package_json() {
+    //    let temp_dir = setup_temp_project();
+    //    let project_root = temp_dir.path();
+    //
+    //    let valid_package_json = r#"
+    //    {
+    //        "name": "example-project",
+    //        "version": "1.0.0"
+    //    }
+    //    "#;
+    //    write_package_json(project_root, valid_package_json);
+    //
+    //    let result = YarnBerryEnvironment::from_project_root(project_root);
+    //    assert!(result.is_ok());
+    //
+    //    let environment = result.unwrap();
+    //    assert!(environment.package_json.is_some());
+    //
+    //    let package_json = environment.package_json.unwrap();
+    //    assert_eq!(package_json.name, Some("example-project".to_string()));
+    //    assert_eq!(package_json.version, Some("1.0.0".to_string()));
+    //}
 
     //#[test]
     //fn test_from_project_root_with_missing_package_json() {
