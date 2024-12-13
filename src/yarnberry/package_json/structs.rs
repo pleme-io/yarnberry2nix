@@ -33,6 +33,7 @@ pub struct PackageJson {
     pub cpu: Option<Vec<String>>,
     pub private: Option<bool>,
     pub publish_config: Option<HashMap<String, String>>,
+    pub resolutions: Option<HashMap<String, String>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
