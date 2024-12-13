@@ -11,4 +11,3 @@ pub fn from_file(path: &Path) -> Result<PackageJson> {
         .context("Failed to parse package.json as JSON")?;
     Ok(package_json)
 }
-

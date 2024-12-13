@@ -1,13 +1,13 @@
-pub mod structs; // Publicly expose the `structs` module
-mod tests;       // Include the `tests` module
+pub mod structs; 
+mod interfaces;
+mod tests;
 
 use anyhow::{Result, Context};
-use serde_json; // Import serde_json for JSON parsing
+use serde_json;
 use std::fs;
 use std::path::Path;
 pub use structs::{PackageJson, Repository};
 
-/// Internal function to parse a `package.json` file into a `PackageJson` struct
 fn from_file(path: &Path) -> Result<PackageJson> {
     let content = fs::read_to_string(path)
         .context(format!("Failed to read package.json at {:?}", path))?;
